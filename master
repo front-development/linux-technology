@@ -1,0 +1,34 @@
+1.yum安装samb
+yum install  samba -y
+2.修改配置文件
+vi  /etc/samba/smb.conf
+[root@nginx samba]# more smb.conf
+[global]
+workgroup = WORKGROUP
+server string = Samba Server %v
+netbios name = centos
+security = user
+map to guest = bad user
+dns proxy = no
+
+[cifs]
+path = /home/cifs/share
+valid users = cifs
+guest ok = no
+writable = yes
+browsable = yes
+3.创建用户组，用户和密码
+groupadd cifs
+useradd cifs -g cifs
+smbpasswd -a cifs
+4.切换cifs 用户 创建目录
+su -l cifs 
+mkdir -p /home/cifs/share
+6.切回root用户，重启服务
+systemctl restart smb
+7.关闭防火墙
+systemctl stop firewalld 
+iptables -F
+setenforce 0
+
+
